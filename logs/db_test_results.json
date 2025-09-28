@@ -1,0 +1,50 @@
+{
+  "session_info": {
+    "start_time": "2025-09-28 16:39:37",
+    "end_time": "2025-09-28 16:39:46",
+    "total_tests": 3,
+    "passed_tests": 3,
+    "failed_tests": 0
+  },
+  "test_results": [
+    {
+      "timestamp": "2025-09-28 16:39:40",
+      "test_name": "테스트 데이터베이스 설정",
+      "status": "PASS",
+      "execution_time": "0.961s",
+      "details": {
+        "operation": "CREATE",
+        "table_name": "users"
+      },
+      "error_message": null
+    },
+    {
+      "timestamp": "2025-09-28 16:39:42",
+      "test_name": "NOT NULL 제약 조건 테스트",
+      "status": "PASS",
+      "execution_time": "0.683s",
+      "details": {
+        "operation": "CONSTRAINT_TEST",
+        "table_name": "users",
+        "constraint_type": "NOT_NULL",
+        "violation_attempted": "name,email",
+        "error_expected": true
+      },
+      "error_message": "NOT NULL 제약조건 위반 감지"
+    },
+    {
+      "timestamp": "2025-09-28 16:39:44",
+      "test_name": "UNIQUE 제약 조건 테스트",
+      "status": "PASS",
+      "execution_time": "0.424s",
+      "details": {
+        "operation": "CONSTRAINT_TEST",
+        "table_name": "users",
+        "constraint_type": "UNIQUE",
+        "violation_attempted": "email",
+        "error_expected": true
+      },
+      "error_message": "정상적으로 UNIQUE 제약 위반 감지"
+    }
+  ]
+}
