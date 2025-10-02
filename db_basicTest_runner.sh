@@ -1,28 +1,11 @@
 #!/bin/bash
 
-# ==========================================
-# DB-HealthMate Phase 1 - SQLite 기본 테스트
-# CUBRID QA 플랫폼 개발자 포트폴리오
-# ==========================================
-
 
 # 설정 변수들
 DB_DIR="db"
 LOG_DIR="logs"
 REPORT_DIR="reports"
 
-
-#!/bin/bash
-
-# ==========================================
-# DB-HealthMate Phase 2A - 로그 관리 고도화
-# CUBRID QA 플랫폼 개발자 포트폴리오
-# ==========================================
-
-# 설정 변수들
-DB_DIR="db"
-LOG_DIR="logs"
-REPORT_DIR="reports"
 
 # 디렉토리 생성
 for dir in "$DB_DIR" "$LOG_DIR" "$REPORT_DIR"; do
@@ -35,7 +18,6 @@ JSON_LOG_FILE="$LOG_DIR/db_test_results.json"
 CSV_REPORT_FILE="$REPORT_DIR/test_history.csv"
 
 
-
 TEST_TABLE="users"
 
 # 테스트 카운터
@@ -46,9 +28,6 @@ failed_tests=0
 # 전역 변수 (JSON 로그용)
 declare -a json_logs=()
 
-# ==========================================
-# 유틸리티 함수들
-# ==========================================
 
 # 실행시간 측정 시작
 start_timer(){
@@ -223,55 +202,8 @@ create_json_log_entry(){
 
 }
 
-# 테스트 시작 헤더 출력
-print_test_header() {
-
-    echo "===========================================" | tee "$LOG_FILE"
-    echo "=== DB-HealthMate 테스트 시작 ===" | tee -a "$LOG_FILE"
-    echo "테스트 시간: $(date)" | tee -a "$LOG_FILE"
-    echo "===========================================" | tee -a "$LOG_FILE"
-    echo ""
-}
-
-# 테스트 결과 요약 출력
-print_advanced_test_summary() {
-    local session_end=$(date '+%Y-%m-%d %H:%M:%S')
-
-    echo "" | tee -a "$LOG_FILE"
-    echo "===========================================" | tee -a "$LOG_FILE"
-    echo "=== 테스트 결과 요약 ===" | tee -a "$LOG_FILE"
-    echo "세션 종료 시간: $session_end" | tee -a "$LOG_FILE"
-    echo "총 테스트: $total_tests개" | tee -a "$LOG_FILE"
-    echo "성공: $passed_tests개" | tee -a "$LOG_FILE"
-    echo "실패: $failed_tests개" | tee -a "$LOG_FILE"
-    
-    
-    if [ $total_tests -gt 0 ]; then
-        success_rate=$((passed_tests * 100 / total_tests))
-        echo "성공률: $success_rate%" | tee -a "$LOG_FILE"
-    fi
-
-    echo "" | tee -a "$LOG_FILE"
-    echo "📊 생성된 리포트 파일들:" | tee -a "$LOG_FILE"
-    echo "  - 텍스트 로그: $LOG_FILE" | tee -a "$LOG_FILE"
-    echo "  - JSON 로그: $JSON_LOG_FILE" | tee -a "$LOG_FILE"  
-    echo "  - CSV 리포트: $CSV_REPORT_FILE" | tee -a "$LOG_FILE"
-    echo "===========================================" | tee -a "$LOG_FILE"
-}
-
-
-
-# ==========================================
-# 데이터베이스 초기 설정 함수
-# ==========================================
-
 setup_test_database() {
-    # TODO: 무결성 테스트를 위한 데이터베이스 설정
-    # TODO: 제약 조건이 포함된 users 테이블 생성
-    # TODO: 외래키 테스트를 위한 orders 테이블도 생성
-    # 힌트: NOT NULL, UNIQUE, CHECK 제약 조건 포함
-    # 힌트: 테스트용 기본 데이터 2-3개 삽입
-    
+
     log_message "INFO" "무결성 테스트를 위한 데이터베이스 설정"
     start_timer
     
@@ -347,10 +279,7 @@ test_not_null_constraints() {
 
 # 2. UNIQUE 제약 조건 테스트
 test_unique_constraints() {
-    # TODO: UNIQUE 제약 위반 테스트 구현
-    # TODO: 이미 존재하는 이메일로 새 사용자 생성 시도
-    # 힌트: 기본 데이터에 있는 이메일과 동일한 값으로 INSERT 시도
-    # 힌트: 에러가 발생해야 테스트 성공
+    
     
     log_message "INFO" "UNIQUE 제약 조건 테스트 시작"
     start_timer
@@ -375,6 +304,263 @@ test_unique_constraints() {
 }
 
 
+# 테이블 초기화
+setup_transaction_test() {
+    log_message "INFO" "트랜잭션 테스트용 테이블 준비 중..."
+    
+    sqlite3 "$DB_FILE" <<EOF
+-- 기존 데이터 정리
+DELETE FROM orders;
+DELETE FROM users;
+
+-- 테스트용 초기 데이터
+INSERT INTO users (name, email, age) VALUES 
+    ('Alice', 'alice@test.com', 25),
+    ('Bob', 'bob@test.com', 30);
+EOF
+    
+    if [ $? -eq 0 ]; then
+        log_message "INFO" "테이블 초기화 완료"
+        return 0
+    else
+        log_message "ERROR" "테이블 초기화 실패"
+        return 1
+    fi
+}
+
+
+test_transaction_commit() {
+    log_message "INFO" "트랜잭션 커밋 테스트 시작"
+    
+    start_timer
+
+    query="
+    BEGIN;
+        INSERT INTO users (name, email, age) VALUES ('Charlie', 'charlie@test.com', 28);
+        INSERT INTO orders (user_id,product, amount) VALUES (last_insert_rowid(),'Laptop', 999.99);
+    COMMIT;
+    "
+
+    error_msg=$(sqlite3 "$DB_FILE" "$query" 2>&1)
+    result=$?
+    
+    if  [ $result -eq 0 ]; then
+        insert_check=$(sqlite3 "$DB_FILE" "
+        SELECT COUNT(*) FROM users u
+        JOIN orders o ON u.id = o.user_id
+        WHERE u.name='Charlie' 
+        AND u.email='charlie@test.com'
+        AND u.age=28
+        AND o.product='Laptop' 
+        AND o.amount=999.99;    
+        " 2>&1)
+        result=$?
+
+        if [ "$insert_check" -ne 1 ]; then
+            result=1
+            error_msg="값이 올바르게 삽입되지 않음"
+        fi
+    fi
+
+    execution_time=$(end_timer)
+    log_test_result "트랜젝션 커밋 테스트" "$result" "$execution_time" "$details" "$error_msg"
+}
+
+# === UNIQUE 제약조건 위반 자동 롤백 테스트 ==="
+test_transaction_rollback() {
+    log_message "INFO" "트랜잭션 롤백 테스트 시작"
+
+    start_timer
+
+    query="
+    BEGIN;
+        INSERT INTO users (name, email, age) VALUES ('eliie','alice@test.com', 30);
+        INSERT INTO orders (user_id,product, amount) VALUES (last_insert_rowid(),'Phone', 11.00);
+    COMMIT;
+    "
+    error_msg=$(sqlite3 "$DB_FILE" "$query" 2>&1)
+    result=$?
+    
+    if [ $result -ne 0 ]; then  
+  
+    users_count=$(sqlite3 "$DB_FILE" "SELECT COUNT(*) FROM users WHERE name='eliie';")
+    orders_count=$(sqlite3 "$DB_FILE" "SELECT COUNT(*) FROM orders WHERE product='Phone';")
+    
+        if [ "$users_count" -eq 0 ] && [ "$orders_count" -eq 0 ]; then
+            result=0  
+            error_msg="자동 롤백 성공"
+        else
+            result=1 
+            error_msg="롤백 실패: users=$users_count, orders=$orders_count"
+        fi
+    else
+        result=1  
+        error_msg="예상과 다름: 제약 조건 위반이 발생하지 않음"
+    fi
+    execution_time=$(end_timer)
+    log_test_result "트랜젝션 자동 롤백 테스트" "$result" "$execution_time" "$details" "$error_msg"
+}
+
+# 수동 롤백 테스트 함수
+
+test_manual_rollback() {
+    log_message "INFO" "수동 롤백 테스트 시작"
+    start_timer
+
+    before_users_cnt=$(sqlite3 "$DB_FILE" "SELECT COUNT(*) FROM users;")
+    before_orders_cnt=$(sqlite3 "$DB_FILE" "SELECT COUNT(*) FROM orders;")
+    
+    error_msg=$(sqlite3 "$DB_FILE" << SQL 2>&1
+    BEGIN;
+        INSERT INTO users (name, email, age) VALUES ('rollbackTest', 'rollback@test.com', 30);
+        INSERT INTO orders (user_id,product, amount) VALUES (last_insert_rowid(),'Phone', 11.00);
+    ROLLBACK;
+SQL
+)
+
+    result=$?
+
+    after_users_cnt=$(sqlite3 "$DB_FILE" "SELECT COUNT(*) FROM users;")
+    after_orders_cnt=$(sqlite3 "$DB_FILE" "SELECT COUNT(*) FROM orders;")
+    
+    if [ $result -eq 0 ]; then
+        if [ $before_users_cnt -ne $after_users_cnt ] ||  [ $before_orders_cnt -ne $after_orders_cnt ]; then
+            result=1
+            error_msg="수동 롤백 실패(데이터 수 : 전/후) users=($before_users_cnt/$after_users_cnt), orders=($before_orders_cnt/$after_orders_cnt)"
+        fi
+    else
+        result=1
+        error_msg="수동 롤백 실패"
+    fi
+    
+    execution_time=$(end_timer)
+    log_test_result "트랜젝션 수동 롤백 테스트" "$result" "$execution_time" "$details" "$error_msg"
+
+}
+
+# 테스트 시작 헤더 출력
+print_test_header() {
+
+    echo "===========================================" | tee "$LOG_FILE"
+    echo "=== DB-HealthMate 테스트 시작 ===" | tee -a "$LOG_FILE"
+    echo "테스트 시간: $(date)" | tee -a "$LOG_FILE"
+    echo "===========================================" | tee -a "$LOG_FILE"
+    echo ""
+}
+
+# 테스트 결과 요약 출력
+print_advanced_test_summary() {
+    local session_end=$(date '+%Y-%m-%d %H:%M:%S')
+
+    echo "" | tee -a "$LOG_FILE"
+    echo "===========================================" | tee -a "$LOG_FILE"
+    echo "=== 테스트 결과 요약 ===" | tee -a "$LOG_FILE"
+    echo "세션 종료 시간: $session_end" | tee -a "$LOG_FILE"
+    echo "총 테스트: $total_tests개" | tee -a "$LOG_FILE"
+    echo "성공: $passed_tests개" | tee -a "$LOG_FILE"
+    echo "실패: $failed_tests개" | tee -a "$LOG_FILE"
+    
+    
+    if [ $total_tests -gt 0 ]; then
+        success_rate=$((passed_tests * 100 / total_tests))
+        echo "성공률: $success_rate%" | tee -a "$LOG_FILE"
+    fi
+
+    echo "" | tee -a "$LOG_FILE"
+    echo "📊 생성된 리포트 파일들:" | tee -a "$LOG_FILE"
+    echo "  - 텍스트 로그: $LOG_FILE" | tee -a "$LOG_FILE"
+    echo "  - JSON 로그: $JSON_LOG_FILE" | tee -a "$LOG_FILE"  
+    echo "  - CSV 리포트: $CSV_REPORT_FILE" | tee -a "$LOG_FILE"
+    echo "===========================================" | tee -a "$LOG_FILE"
+}
+
+
+# 프로세스 동시성으로 INSERT 문 누락 테스트
+test_concurrent_inserts() {
+    echo "=== 동시 INSERT 테스트 ==="
+    
+    sqlite3 "$DB_FILE" "DELETE FROM users WHERE name LIKE 'Concurrent%';"
+    
+    # 성공/실패 카운터
+    success=0
+    failed=0
+    
+    # 3개 프로세스 동시 실행
+    for i in {1..3}; do
+        sqlite3 "$DB_FILE" "INSERT INTO users (name, email, age) VALUES ('Concurrent$i', 'c$i@test.com', $((25+i)));" &
+        pids[$i]=$!
+    done
+    
+    # 각 프로세스 결과 확인
+    for i in {1..3}; do
+        wait ${pids[$i]}
+        result=$?
+        if [ $result -eq 0 ]; then
+            success=$((success + 1))
+        else
+            failed=$((failed + 1))
+            echo "⚠️  프로세스 $i 실패 (exit code: $result)"
+        fi
+    done
+    
+    echo "성공: $success, 실패: $failed"
+    
+    # 실제 삽입된 레코드 확인
+    concurrent_count=$(sqlite3 "$DB_FILE" "SELECT COUNT(*) FROM users WHERE name LIKE 'Concurrent%';")
+    echo "DB에 삽입된 레코드: $concurrent_count"
+    
+    # 검증: 성공한 개수와 DB 레코드 수가 일치해야 함
+    if [ "$concurrent_count" -eq "$success" ]; then
+        echo "✅ 동시성 테스트 통과"
+        return 0
+    else
+        echo "❌ 데이터 불일치 발생!"
+        return 1
+    fi
+}
+
+# 데이터베이스 동시성으로 인해 데이터베이스 값 유실 테스트
+test_update_conflicts() {
+    echo "=== Lost Update 테스트 ==="
+    
+    # 초기화
+    sqlite3 "$DB_FILE" "DELETE FROM users;"
+    sqlite3 "$DB_FILE" "INSERT INTO users (name, email, age) VALUES('Test', 'test@test.com', 30);"
+    
+    update_separated() {
+        age=$(sqlite3 "$DB_FILE" "SELECT age FROM users WHERE name='Test';")
+        
+        new_age=$((age + 1))
+        
+        sleep 0.1
+        sqlite3 "$DB_FILE" "UPDATE users SET age=$new_age WHERE name='Test';"
+        return $?
+    }
+    
+    for i in {1..5}; do
+        update_separated &
+        pids[$i]=$!
+    done
+    
+    # 대기
+    success=0
+    for i in {1..5}; do
+        wait ${pids[$i]}
+        [ $? -eq 0 ] && success=$((success + 1))
+    done
+    
+    final_age=$(sqlite3 "$DB_FILE" "SELECT age FROM users WHERE name='Test';")
+    
+    echo "성공한 프로세스: $success"
+    echo "최종 age: $final_age"
+    echo "기대 age: $((30 + success))"
+    
+    if [ "$final_age" -lt "$((30 + success))" ]; then
+        echo "🔥 Lost Update 발생!"
+        echo "   손실: $((30 + success - final_age))번"
+    fi
+}
+
 # 1. 데이터베이스 및 테이블 생성 함수
 create_test_database() {
     # TODO: SQLite 데이터베이스 파일 생성
@@ -397,6 +583,69 @@ create_test_database() {
     details=$(create_details_by_operation "CREATE" "$table_name" "$query")
     log_test_result "테이블 생성 테스트" "$result" "$execution_time" "$details" "$error_msg"
 
+}
+
+test_deadlock_detection() {
+    echo "=== 잠금 타임아웃 테스트 ==="
+    
+    sqlite3 "$DB_FILE" "DELETE FROM users; DELETE FROM orders;"
+
+    sqlite3 "$DB_FILE" >/dev/null 2>&1 <<EOF &
+BEGIN IMMEDIATE;
+INSERT INTO users (name, email, age) VALUES ('LongTx', 'long@test.com', 40);
+
+-- 시간 지연용 쿼리
+WITH RECURSIVE cnt(x) AS (
+    SELECT 1
+    UNION ALL
+    SELECT x+1 FROM cnt
+    LIMIT 5000000
+)
+SELECT COUNT(*) FROM cnt;
+
+COMMIT;
+EOF
+    pid1=$!
+    
+    echo "긴 트랜잭션 시작 (PID: $pid1)"
+    sleep 0.1
+    # 여기에 코드 작성
+    sqlite3 "$DB_FILE" >/dev/null 2>&1 <<EOF &
+.timeout 100
+BEGIN IMMEDIATE;
+INSERT INTO users (name, email, age) VALUES ('ShortTx', 'short@test.com', 25);
+COMMIT;
+EOF
+    pid2=$!
+    
+    
+    echo "짧은 트랜잭션 시작 (PID: $pid2)"
+    
+    wait $pid1
+    result1=$?
+    wait $pid2
+    result2=$?
+    
+    
+    echo "프로세스 1 (긴 트랜잭션): exit code $result1"
+    echo "프로세스 2 (짧은 트랜잭션): exit code $result2"
+    
+    
+    has_long=$(sqlite3 "$DB_FILE" "SELECT COUNT(*) FROM users WHERE name='LongTx';" 2>&1)
+    has_short=$(sqlite3 "$DB_FILE" "SELECT COUNT(*) FROM users WHERE name='ShortTx';" 2>&1)
+    
+    echo "DB에 저장된 레코드: LongTx=$has_long, ShortTx=$has_short"
+    
+    # 검증
+    if [ $result1 -eq 0 ] && [ $result2 -ne 0 ]; then
+        if [ $has_long -eq 1 ] && [ $has_short -eq 0 ]; then
+            echo "✅ 테스트 성공: 타임아웃으로 충돌 방지됨"
+            return 0
+        fi
+    fi
+    
+    echo "❌ 테스트 실패: 예상과 다른 결과"
+    return 1
 }
 
 # 2. INSERT 테스트 함수
@@ -562,19 +811,25 @@ main() {
     # test_delete_data
     # 데이터베이스 설정
     setup_test_database
-    
+    setup_transaction_test
+    # test_transaction_commit
+    # test_transaction_rollback
+    # test_manual_rollback
+
+    # test_update_conflicts
+    test_deadlock_detection
     # 무결성 검증 테스트들
-    test_not_null_constraints
-    test_unique_constraints
+    # test_not_null_constraints
+    # test_unique_constraints
 
     # 결과 요약 출력
-    print_advanced_test_summary
+    # print_advanced_test_summary
 
     # json 파일 생성
-    write_json_log_file "$session_start"
+    # write_json_log_file "$session_start"
 
     # csv 히스토리 추가
-    write_csv_report
+    # write_csv_report
 
     # 정리 작업
     cleanup_test_data

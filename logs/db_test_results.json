@@ -1,17 +1,17 @@
 {
   "session_info": {
-    "start_time": "2025-09-28 16:39:37",
-    "end_time": "2025-09-28 16:39:46",
+    "start_time": "2025-09-29 13:56:26",
+    "end_time": "2025-09-29 13:56:36",
     "total_tests": 3,
     "passed_tests": 3,
     "failed_tests": 0
   },
   "test_results": [
     {
-      "timestamp": "2025-09-28 16:39:40",
+      "timestamp": "2025-09-29 13:56:29",
       "test_name": "테스트 데이터베이스 설정",
       "status": "PASS",
-      "execution_time": "0.961s",
+      "execution_time": "0.740s",
       "details": {
         "operation": "CREATE",
         "table_name": "users"
@@ -19,10 +19,10 @@
       "error_message": null
     },
     {
-      "timestamp": "2025-09-28 16:39:42",
+      "timestamp": "2025-09-29 13:56:31",
       "test_name": "NOT NULL 제약 조건 테스트",
       "status": "PASS",
-      "execution_time": "0.683s",
+      "execution_time": "0.563s",
       "details": {
         "operation": "CONSTRAINT_TEST",
         "table_name": "users",
@@ -33,10 +33,10 @@
       "error_message": "NOT NULL 제약조건 위반 감지"
     },
     {
-      "timestamp": "2025-09-28 16:39:44",
+      "timestamp": "2025-09-29 13:56:33",
       "test_name": "UNIQUE 제약 조건 테스트",
       "status": "PASS",
-      "execution_time": "0.424s",
+      "execution_time": "0.355s",
       "details": {
         "operation": "CONSTRAINT_TEST",
         "table_name": "users",
