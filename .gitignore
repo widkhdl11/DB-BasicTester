@@ -1,1 +1,4 @@
 ./example.sh
+
+./test.sh
+./test.db

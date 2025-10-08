@@ -1,50 +1,161 @@
 {
   "session_info": {
-    "start_time": "2025-09-29 13:56:26",
-    "end_time": "2025-09-29 13:56:36",
-    "total_tests": 3,
-    "passed_tests": 3,
+    "start_time": "2025-10-08 16:35:59",
+    "end_time": "2025-10-08 16:36:58",
+    "total_tests": 13,
+    "passed_tests": 13,
     "failed_tests": 0
   },
   "test_results": [
     {
-      "timestamp": "2025-09-29 13:56:29",
-      "test_name": "테스트 데이터베이스 설정",
+      "timestamp": "2025-10-08 16:36:03",
+      "test_name": "테이블 생성 테스트",
       "status": "PASS",
-      "execution_time": "0.740s",
+      "execution_time": "0.897s",
       "details": {
-        "operation": "CREATE",
-        "table_name": "users"
+        "created_tables": "[users,orders]"
       },
       "error_message": null
     },
     {
-      "timestamp": "2025-09-29 13:56:31",
-      "test_name": "NOT NULL 제약 조건 테스트",
+      "timestamp": "2025-10-08 16:36:07",
+      "test_name": "데이터 삽입 테스트",
       "status": "PASS",
-      "execution_time": "0.563s",
+      "execution_time": "2.340s",
       "details": {
-        "operation": "CONSTRAINT_TEST",
-        "table_name": "users",
-        "constraint_type": "NOT_NULL",
-        "violation_attempted": "name,email",
-        "error_expected": true
+        "inserted_rows": 5
       },
-      "error_message": "NOT NULL 제약조건 위반 감지"
+      "error_message": null
     },
     {
-      "timestamp": "2025-09-29 13:56:33",
-      "test_name": "UNIQUE 제약 조건 테스트",
+      "timestamp": "2025-10-08 16:36:11",
+      "test_name": "데이터 조회 테스트",
       "status": "PASS",
-      "execution_time": "0.355s",
+      "execution_time": "2.343s",
       "details": {
-        "operation": "CONSTRAINT_TEST",
-        "table_name": "users",
-        "constraint_type": "UNIQUE",
-        "violation_attempted": "email",
-        "error_expected": true
+        "actual_count": 5,
+        "expected_count": 5
       },
-      "error_message": "정상적으로 UNIQUE 제약 위반 감지"
+      "error_message": "5"
+    },
+    {
+      "timestamp": "2025-10-08 16:36:15",
+      "test_name": "데이터 업데이트 테스트",
+      "status": "PASS",
+      "execution_time": "3.275s",
+      "details": {
+        "updated_id": 11,
+        "updated_filed": "email",
+        "updated_value": "UpdateEmail"
+      },
+      "error_message": "UpdateEmail"
+    },
+    {
+      "timestamp": "2025-10-08 16:36:20",
+      "test_name": "데이터 삭제 테스트",
+      "status": "PASS",
+      "execution_time": "3.326s",
+      "details": {
+        "deleted_id": 16,
+        "actual_count": 4,
+        "expected_count": 4
+      },
+      "error_message": "4"
+    },
+    {
+      "timestamp": "2025-10-08 16:36:23",
+      "test_name": "NOT NULL 제약 조건 테스트",
+      "status": "PASS",
+      "execution_time": "2.030s",
+      "details": {
+        "before_rows": 0,
+        "after_rows": 0
+      },
+      "error_message": "✅ NOT NULL 제약조건 위반 감지"
+    },
+    {
+      "timestamp": "2025-10-08 16:36:30",
+      "test_name": "NOT NULL 제약 조건 테스트",
+      "status": "PASS",
+      "execution_time": "4.492s",
+      "details": {
+        "before_rows": 5,
+        "after_rows": 5
+      },
+      "error_message": "✅ 정상적으로 UNIQUE 제약 위반 감지"
+    },
+    {
+      "timestamp": "2025-10-08 16:36:32",
+      "test_name": "트랜젝션 커밋 테스트",
+      "status": "PASS",
+      "execution_time": "1.146s",
+      "details": {
+        "before_rows": 5,
+        "inserted_rows": 2,
+        "after_rows": 6
+      },
+      "error_message": null
+    },
+    {
+      "timestamp": "2025-10-08 16:36:38",
+      "test_name": "트랜젝션 자동 롤백 테스트",
+      "status": "PASS",
+      "execution_time": "4.216s",
+      "details": {
+        "users_table_expected_count": 0,
+        "users_table_actual_count": 0,
+        "orders_table_expected_count": 0,
+        "odrers_table_actual_count": 0
+      },
+      "error_message": null
+    },
+    {
+      "timestamp": "2025-10-08 16:36:43",
+      "test_name": "트랜젝션 수동 롤백 테스트",
+      "status": "PASS",
+      "execution_time": "4.296s",
+      "details": {
+        "users_table_expected_count": 5,
+        "users_table_actual_count": 5,
+        "orders_table_expected_count": 0,
+        "odrers_table_actual_count": 0
+      },
+      "error_message": null
+    },
+    {
+      "timestamp": "2025-10-08 16:36:46",
+      "test_name": "동시성 INSERT 테스트",
+      "status": "PASS",
+      "execution_time": "1.303s",
+      "details": {
+        "success_count": 2,
+        "failed_count": 1
+      },
+      "error_message": null
+    },
+    {
+      "timestamp": "2025-10-08 16:36:50",
+      "test_name": "동시성 INSERT 테스트",
+      "status": "PASS",
+      "execution_time": "3.284s",
+      "details": {
+        "query_attempts_count": 5,
+        "success_query_count": 4,
+        "expected_age": 29,
+        "actual_age": 25
+      },
+      "error_message": null
+    },
+    {
+      "timestamp": "2025-10-08 16:36:55",
+      "test_name": "타임아웃 테스트",
+      "status": "PASS",
+      "execution_time": "3.807s",
+      "details": {
+        "long_success": 0,
+        "short_success": 1
+      },
+      "error_message": null
     }
   ]
 }
