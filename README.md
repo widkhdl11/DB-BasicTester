@@ -107,6 +107,6 @@ project/
 
 ### 실행
 
-chmod +x db_basicTest_runner.sh
-./db_basicTest_runner.sh
+- chmod +x db_basicTest_runner.sh
+- ./db_basicTest_runner.sh
 
