@@ -40,7 +40,7 @@ run_query(){
         fi
     fi
 
-    if [ -n "$query_result" ]; then
+    if [ -n "$query_result" ] && [ "$expected_success" = "true" ]; then
         echo "$query_result"
     fi
     return 0
@@ -165,7 +165,7 @@ setup_tables(){
     run_query "$orders_query"
     result2=$?
 
-    if [ $result1 -eq 0 ] && [ $result1 -eq 0 ]; then
+    if [ $result1 -eq 0 ] && [ $result2 -eq 0 ]; then
         echo "✅ 테스트 테이블 생성 완료" >&2
         return 0
     else

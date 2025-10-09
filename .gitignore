@@ -2,3 +2,22 @@
 
 ./test.sh
 ./test.db
+
+
+# 데이터베이스 파일
+db/
+*.db
+
+# 로그 파일
+logs/
+*.log
+*.json
+
+# 리포트 파일  
+reports/
+*.csv
+
+# 시스템 파일
+.DS_Store
+*.swp
+*~

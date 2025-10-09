@@ -1,10 +1,13 @@
 #!/bin/bash
 
 
+VERSION="1.0.0"
+
 # 설정 변수들
-DB_DIR="db"
-LOG_DIR="logs"
-REPORT_DIR="reports"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DB_DIR="$SCRIPT_DIR/db"
+LOG_DIR="$SCRIPT_DIR/logs"
+REPORT_DIR="$SCRIPT_DIR/reports"
 
 
 # 디렉토리 생성
@@ -26,3 +29,5 @@ declare -a json_logs=()
 total_tests=0
 passed_tests=0
 failed_tests=0
+
+

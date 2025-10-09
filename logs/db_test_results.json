@@ -1,37 +1,37 @@
 {
   "session_info": {
-    "start_time": "2025-10-08 16:35:59",
-    "end_time": "2025-10-08 16:36:58",
+    "start_time": "2025-10-09 15:40:50",
+    "end_time": "2025-10-09 15:41:43",
     "total_tests": 13,
     "passed_tests": 13,
     "failed_tests": 0
   },
   "test_results": [
     {
-      "timestamp": "2025-10-08 16:36:03",
+      "timestamp": "2025-10-09 15:40:53",
       "test_name": "테이블 생성 테스트",
       "status": "PASS",
-      "execution_time": "0.897s",
+      "execution_time": "0.801s",
       "details": {
         "created_tables": "[users,orders]"
       },
       "error_message": null
     },
     {
-      "timestamp": "2025-10-08 16:36:07",
+      "timestamp": "2025-10-09 15:40:57",
       "test_name": "데이터 삽입 테스트",
       "status": "PASS",
-      "execution_time": "2.340s",
+      "execution_time": "2.063s",
       "details": {
         "inserted_rows": 5
       },
       "error_message": null
     },
     {
-      "timestamp": "2025-10-08 16:36:11",
+      "timestamp": "2025-10-09 15:41:00",
       "test_name": "데이터 조회 테스트",
       "status": "PASS",
-      "execution_time": "2.343s",
+      "execution_time": "1.993s",
       "details": {
         "actual_count": 5,
         "expected_count": 5
@@ -39,10 +39,10 @@
       "error_message": "5"
     },
     {
-      "timestamp": "2025-10-08 16:36:15",
+      "timestamp": "2025-10-09 15:41:05",
       "test_name": "데이터 업데이트 테스트",
       "status": "PASS",
-      "execution_time": "3.275s",
+      "execution_time": "3.221s",
       "details": {
         "updated_id": 11,
         "updated_filed": "email",
@@ -51,10 +51,10 @@
       "error_message": "UpdateEmail"
     },
     {
-      "timestamp": "2025-10-08 16:36:20",
+      "timestamp": "2025-10-09 15:41:10",
       "test_name": "데이터 삭제 테스트",
       "status": "PASS",
-      "execution_time": "3.326s",
+      "execution_time": "2.902s",
       "details": {
         "deleted_id": 16,
         "actual_count": 4,
@@ -63,10 +63,10 @@
       "error_message": "4"
     },
     {
-      "timestamp": "2025-10-08 16:36:23",
+      "timestamp": "2025-10-09 15:41:13",
       "test_name": "NOT NULL 제약 조건 테스트",
       "status": "PASS",
-      "execution_time": "2.030s",
+      "execution_time": "1.740s",
       "details": {
         "before_rows": 0,
         "after_rows": 0
@@ -74,10 +74,10 @@
       "error_message": "✅ NOT NULL 제약조건 위반 감지"
     },
     {
-      "timestamp": "2025-10-08 16:36:30",
+      "timestamp": "2025-10-09 15:41:17",
       "test_name": "NOT NULL 제약 조건 테스트",
       "status": "PASS",
-      "execution_time": "4.492s",
+      "execution_time": "2.732s",
       "details": {
         "before_rows": 5,
         "after_rows": 5
@@ -85,10 +85,10 @@
       "error_message": "✅ 정상적으로 UNIQUE 제약 위반 감지"
     },
     {
-      "timestamp": "2025-10-08 16:36:32",
+      "timestamp": "2025-10-09 15:41:20",
       "test_name": "트랜젝션 커밋 테스트",
       "status": "PASS",
-      "execution_time": "1.146s",
+      "execution_time": "1.219s",
       "details": {
         "before_rows": 5,
         "inserted_rows": 2,
@@ -97,10 +97,10 @@
       "error_message": null
     },
     {
-      "timestamp": "2025-10-08 16:36:38",
+      "timestamp": "2025-10-09 15:41:24",
       "test_name": "트랜젝션 자동 롤백 테스트",
       "status": "PASS",
-      "execution_time": "4.216s",
+      "execution_time": "3.484s",
       "details": {
         "users_table_expected_count": 0,
         "users_table_actual_count": 0,
@@ -110,10 +110,10 @@
       "error_message": null
     },
     {
-      "timestamp": "2025-10-08 16:36:43",
+      "timestamp": "2025-10-09 15:41:30",
       "test_name": "트랜젝션 수동 롤백 테스트",
       "status": "PASS",
-      "execution_time": "4.296s",
+      "execution_time": "4.144s",
       "details": {
         "users_table_expected_count": 5,
         "users_table_actual_count": 5,
@@ -123,10 +123,10 @@
       "error_message": null
     },
     {
-      "timestamp": "2025-10-08 16:36:46",
+      "timestamp": "2025-10-09 15:41:33",
       "test_name": "동시성 INSERT 테스트",
       "status": "PASS",
-      "execution_time": "1.303s",
+      "execution_time": "1.286s",
       "details": {
         "success_count": 2,
         "failed_count": 1
@@ -134,10 +134,10 @@
       "error_message": null
     },
     {
-      "timestamp": "2025-10-08 16:36:50",
+      "timestamp": "2025-10-09 15:41:37",
       "test_name": "동시성 INSERT 테스트",
       "status": "PASS",
-      "execution_time": "3.284s",
+      "execution_time": "3.204s",
       "details": {
         "query_attempts_count": 5,
         "success_query_count": 4,
@@ -147,10 +147,10 @@
       "error_message": null
     },
     {
-      "timestamp": "2025-10-08 16:36:55",
+      "timestamp": "2025-10-09 15:41:42",
       "test_name": "타임아웃 테스트",
       "status": "PASS",
-      "execution_time": "3.807s",
+      "execution_time": "3.331s",
       "details": {
         "long_success": 0,
         "short_success": 1

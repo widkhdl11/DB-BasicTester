@@ -1,51 +1,62 @@
 #!/bin/bash
 
-source ./lib/db_helper.sh
-source ./lib/utils.sh
-source ./lib/logger.sh
+# 스크립트 파일 임포트
+for lib in lib/*.sh; do
+    source "$lib"
+done
+for test in tests/*.sh; do
+    source "$test"
+done
 source ./config.sh
-source ./tests/crud.sh
-source ./tests/integrity.sh
-source ./tests/transaction.sh
-source ./tests/concurrency.sh
 
-TEST_TABLE="users"
+# 절대경로 설정
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
 
+# 버전 출력 옵션
+if [ "$1" = "--version" ] || [ "$1" = "-v" ]; then
+    echo "DB-BasicTester v$VERSION"
+    exit 0
+fi
 
 # 테스트 시작 헤더 출력
 print_test_header() {
+    {
 
-    echo "===========================================" | tee "$LOG_FILE"
-    echo "=== DB-HealthMate 테스트 시작 ===" | tee -a "$LOG_FILE"
-    echo "테스트 시간: $(date)" | tee -a "$LOG_FILE"
-    echo "===========================================" | tee -a "$LOG_FILE"
+    echo "===========================================" 
+    echo "=== DB-HealthMate 테스트 시작 ===" 
+    echo "테스트 시간: $(date)" 
+    echo "===========================================" 
     echo ""
+    } | tee "$LOG_FILE"
 }
 
 # 테스트 결과 요약 출력
 print_advanced_test_summary() {
     local session_end=$(date '+%Y-%m-%d %H:%M:%S')
 
-    echo "" | tee -a "$LOG_FILE"
-    echo "===========================================" | tee -a "$LOG_FILE"
-    echo "=== 테스트 결과 요약 ===" | tee -a "$LOG_FILE"
-    echo "세션 종료 시간: $session_end" | tee -a "$LOG_FILE"
-    echo "총 테스트: $total_tests개" | tee -a "$LOG_FILE"
-    echo "성공: $passed_tests개" | tee -a "$LOG_FILE"
-    echo "실패: $failed_tests개" | tee -a "$LOG_FILE"
+    {
+    echo "" 
+    echo "===========================================" 
+    echo "--- 테스트 결과 요약 ---" 
+    echo "세션 종료 시간: $session_end" 
+    echo "총 테스트: $total_tests개" 
+    echo "성공: $passed_tests개" 
+    echo "실패: $failed_tests개" 
     
     
     if [ $total_tests -gt 0 ]; then
         success_rate=$((passed_tests * 100 / total_tests))
-        echo "성공률: $success_rate%" | tee -a "$LOG_FILE"
+        echo "성공률: $success_rate%" 
     fi
 
-    echo "" | tee -a "$LOG_FILE"
-    echo "📊 생성된 리포트 파일들:" | tee -a "$LOG_FILE"
-    echo "  - 텍스트 로그: $LOG_FILE" | tee -a "$LOG_FILE"
-    echo "  - JSON 로그: $JSON_LOG_FILE" | tee -a "$LOG_FILE"  
-    echo "  - CSV 리포트: $CSV_REPORT_FILE" | tee -a "$LOG_FILE"
-    echo "===========================================" | tee -a "$LOG_FILE"
+    echo "" 
+    echo "📊 생성된 리포트 파일들:" 
+    echo "  - 텍스트 로그: $LOG_FILE" 
+    echo "  - JSON 로그: $JSON_LOG_FILE" 
+    echo "  - CSV 리포트: $CSV_REPORT_FILE" 
+    echo "==========================================="
+    } | tee -a "$LOG_FILE"
 }
 
 
@@ -68,7 +79,6 @@ main() {
 
     # 테스트할 테이블 생성
     setup_tables
-
     # 기본 테이블 생성 및 CRUD 테스트
     create_test_database
     test_insert_data

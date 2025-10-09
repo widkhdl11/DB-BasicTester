@@ -55,9 +55,8 @@ write_json_log_file() {
         
         echo "}"
     } > "$JSON_LOG_FILE"
-    if command -v jq >/dev/null 2>&1; then
-        jq '.' "$JSON_LOG_FILE" > "${JSON_LOG_FILE}.tmp" && mv "${JSON_LOG_FILE}.tmp" "$JSON_LOG_FILE"
-    fi
+
+    jq '.' "$JSON_LOG_FILE" > "${JSON_LOG_FILE}.tmp" && mv "${JSON_LOG_FILE}.tmp" "$JSON_LOG_FILE"
 }
 
 
@@ -75,13 +74,13 @@ log_test_result() {
     if [ $result -eq 0 ]; then
         ((passed_tests++))
         status="PASS"
-        echo "[$total_tests/?] $test_name ✅ PASS" | tee -a "$LOG_FILE"
+        echo "[$total_tests/?] $test_name ✅ PASS" | tee -a "$LOG_FILE" >&2
         log_message "INFO" "테스트 성공: $test_name"
 
     else
         ((failed_tests++))
         status="FAIL"
-        echo "[$total_tests/?] $test_name ❌ FAIL - $error_message" | tee -a "$LOG_FILE"
+        echo "[$total_tests/?] $test_name ❌ FAIL - $error_message" | tee -a "$LOG_FILE" >&2
         log_message "ERROR" "테스트 실패: $test_name - $error_message"
 
     fi

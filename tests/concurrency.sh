@@ -3,7 +3,7 @@
 
 # 프로세스 동시성으로 INSERT 문 누락 테스트
 test_concurrent_inserts() {
-    echo "=== 동시성 INSERT 테스트 ==="
+    log_message "INFO" "동시성 INSERT 테스트 시작"
     start_timer
     reset_tables "users" "orders"
     
@@ -60,7 +60,7 @@ test_concurrent_inserts() {
 
 # 데이터베이스 동시성으로 인해 데이터베이스 값 유실 테스트
 test_update_conflicts() {
-    echo "=== Lost Update 테스트 ==="
+    log_message "INFO" "Lost Update 테스트 시작"
     start_timer
     reset_tables "users" "orders"
     setup_data
@@ -103,7 +103,7 @@ test_update_conflicts() {
     echo "기대 age: $expected_age"
     
     if [ "$final_age" -lt "$expected_age" ]; then
-        retult=0
+        result=0
         echo "✅ 테스트 성공 (Lost Update 발생)"
         echo "   손실: $((25 + success - final_age))번"
     else
