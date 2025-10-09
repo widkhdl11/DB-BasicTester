@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # 스크립트 파일 임포트
+source ./config.sh
 for lib in lib/*.sh; do
     source "$lib"
 done
 for test in tests/*.sh; do
     source "$test"
 done
-source ./config.sh
 
 # 절대경로 설정
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

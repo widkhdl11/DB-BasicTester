@@ -1,11 +1,9 @@
 #!/bin/bash
 
-# check_list=("sqlite3" "bash" "bc" "jq")
-
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+check_list=("sqlite3" "bash" "bc" "jq")
 
 for p in "${check_list[@]}"; do
-    local version=""
+    version=""
     echo "$p 설치 확인 중"
     if command -v $p >/dev/null 2>&1 ; then
         if $p --version >/dev/null 2>&1 ; then
