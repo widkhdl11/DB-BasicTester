@@ -97,7 +97,6 @@ project/
 }
 ```
 
-## 실행 방법
 
 ### 요구사항
 - Linux/Unix 환경
@@ -105,8 +104,16 @@ project/
 - SQLite3
 - jq
 
-### 실행
+## 실행 방법
+# 1. 실행 권한
+chmod +x check_env.sh
+chmod +x db_basicTest_runner.sh
 
-- chmod +x db_basicTest_runner.sh
+# 2. 환경 확인
+./check_env.sh
+
+# 3. 테스트 실행
+./db_basicTest_runner.sh
+
 - ./db_basicTest_runner.sh
 
