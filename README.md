@@ -114,6 +114,3 @@ chmod +x db_basicTest_runner.sh
 
 # 3. 테스트 실행
 ./db_basicTest_runner.sh
-
-- ./db_basicTest_runner.sh
-
