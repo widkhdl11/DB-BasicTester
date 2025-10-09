@@ -16,8 +16,3 @@ logs/
 # 리포트 파일  
 reports/
 *.csv
-
-# 시스템 파일
-.DS_Store
-*.swp
-*~
