@@ -21,7 +21,7 @@ CRUD, 트랜잭션, 동시성 등 실제 DB 환경에서 발생할 수 있는 �
 
 
 ## 프로젝트 구조
-project/
+project/  
 ├── db_basicTest_runner.sh    # 메인 실행 파일  
 ├── config.sh                  # 설정  
 ├── lib/                       # 라이브러리  
