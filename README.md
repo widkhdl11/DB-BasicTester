@@ -23,16 +23,16 @@ CRUD, 트랜잭션, 동시성 등 실제 DB 환경에서 발생할 수 있는 �
 ## 프로젝트 구조
 project/
 ├── db_basicTest_runner.sh    # 메인 실행 파일  
-├── config.sh                  # 설정
-├── lib/                       # 라이브러리
-│   ├── db_helper.sh          # DB 헬퍼 함수
-│   ├── logger.sh             # 로깅 함수
-│   └── utils.sh              # 유틸리티 함수
-└── tests/                     # 테스트케이스
-├── crud.sh               # CRUD 테스트
-├── integrity.sh          # 무결성 검증
-├── transaction.sh        # 트랜잭션 테스트
-└── concurrency.sh        # 동시성 테스트
+├── config.sh                  # 설정  
+├── lib/                       # 라이브러리  
+│   ├── db_helper.sh          # DB 헬퍼 함수  
+│   ├── logger.sh             # 로깅 함수  
+│   └── utils.sh              # 유틸리티 함수  
+└── tests/                     # 테스트케이스  
+├── crud.sh               # CRUD 테스트  
+├── integrity.sh          # 무결성 검증  
+├── transaction.sh        # 트랜잭션 테스트  
+└── concurrency.sh        # 동시성 테스트  
 
 ---
 
