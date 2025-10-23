@@ -14,16 +14,16 @@ end_timer(){
 
 }
 
+# json 형식 변환 함수 make_json "key=value"
 make_json() {
     local result="{"
     local first=true
     
     while [ $# -gt 0 ]; do
         IFS='=' read -r key value <<< "$1"
-        
+
         [ "$first" = false ] && result="$result,"
         
-        # 숫자 판별
         if [[ "$value" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
             result="$result\"$key\":$value"
         elif [[ "$value" =~ ^(true|false)$ ]]; then

@@ -62,7 +62,8 @@ test_concurrent_inserts() {
 test_update_conflicts() {
     log_message "INFO" "Lost Update 테스트 시작"
     start_timer
-    reset_tables "users" "orders"
+
+    reset_tables "orders" "users"
     setup_data
 
     local pids=()    
@@ -73,12 +74,12 @@ test_update_conflicts() {
     local success=0
     local final_age=0
     local expected_age=0
-
+    
     update_separated() {
         age=$(run_query "SELECT age FROM users WHERE name='test1';")
         
-        (( age + 1 ))
-        
+        (( age++ ))
+
         sleep 0.1
         run_query "UPDATE users SET age=$age WHERE name='test1';"
         return $?
@@ -87,6 +88,7 @@ test_update_conflicts() {
     for i in {1..5}; do
         update_separated &
         pids[$i]=$!
+        sleep 0.1
     done
     
     # 대기
@@ -96,6 +98,7 @@ test_update_conflicts() {
     done
     
     final_age=$(run_query "SELECT age FROM users WHERE name='test1';")
+    
     expected_age=$(( 25+success ))
 
     echo "성공한 프로세스: $success"
@@ -120,7 +123,7 @@ test_update_conflicts() {
 
 
 # IMMEDIATE를 사용하여 동시성으로 인한 데이터 유실 방지 확인 테스트
-test_deadlock_detection() {
+test_timeout_detection() {
     echo "=== 잠금 타임아웃 테스트 ==="
     start_timer
     reset_tables "users" "orders"

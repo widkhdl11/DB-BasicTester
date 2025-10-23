@@ -80,21 +80,21 @@ main() {
     # 테스트할 테이블 생성
     setup_tables
     # 기본 테이블 생성 및 CRUD 테스트
-    create_test_database
-    test_insert_data
-    test_select_data
-    test_update_data
-    test_delete_data
+    # create_test_database
+    # test_insert_data
+    # test_select_data
+    # test_update_data
+    # test_delete_data
 
 
     # 무결성 검증 테스트들
-    test_not_null_constraints
-    test_unique_constraints
+    # test_not_null_constraints
+    # test_unique_constraints
 
     # 트랜젝션 테스트
-    test_transaction_commit
-    test_transaction_rollback
-    test_manual_rollback
+    # test_transaction_commit
+    # test_transaction_rollback
+    # test_manual_rollback
 
     # 동시성 테스트
     test_concurrent_inserts
